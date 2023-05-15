@@ -2,11 +2,14 @@ image: sikalabs/ci
 
 stages:
   - build
+  - deploy dev
 
 variables:
   GIT_CLEAN_FLAGS: -ffdx -e .kaniko-cache
   TAG: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
   IMAGE: $CI_REGISTRY_IMAGE:$TAG
+  RELEASE: $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG
+  DEV_HOST: $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$BASE_DOMAIN
 
 build:
   stage: build
@@ -21,3 +24,20 @@ build:
       --destination $IMAGE
       --cache=true
       --cache-dir .kaniko-cache
+
+deploy dev:
+  stage: deploy dev
+  variables:
+    HOST: $DEV_HOST
+  script:
+    - helm upgrade --install
+      $RELEASE
+      one-image --repo https://helm.sikalabs.io
+      --namespace $RELEASE
+      --create-namespace
+      --wait
+      --set image=$IMAGE
+      --set host=$HOST
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+    url: https://$HOST
