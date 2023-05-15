@@ -3,6 +3,7 @@ image: sikalabs/ci
 stages:
   - build
   - deploy dev
+  - test dev
 
 variables:
   GIT_CLEAN_FLAGS: -ffdx -e .kaniko-cache
@@ -42,3 +43,10 @@ deploy dev:
   environment:
     name: $CI_COMMIT_REF_SLUG
     url: https://$HOST
+
+test dev:
+  stage: test dev
+  variables:
+    HOST: $DEV_HOST
+  script:
+    - curl -s https://$HOST
