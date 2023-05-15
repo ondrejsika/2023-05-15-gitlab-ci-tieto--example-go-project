@@ -43,6 +43,19 @@ deploy dev:
   environment:
     name: $CI_COMMIT_REF_SLUG
     url: https://$HOST
+    on_stop: stop dev
+
+stop dev:
+  stage: deploy dev
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - helm uninstall $RELEASE --namespace $RELEASE
+  when: manual
+  allow_failure: false
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+    action: stop
 
 test dev:
   stage: test dev
