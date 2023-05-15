@@ -38,6 +38,7 @@ deploy dev:
       --wait
       --set image=$IMAGE
       --set host=$HOST
+    - slu wait-for tls -a $HOST:443
   environment:
     name: $CI_COMMIT_REF_SLUG
     url: https://$HOST
