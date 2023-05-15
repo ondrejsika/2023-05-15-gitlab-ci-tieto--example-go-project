@@ -57,6 +57,7 @@ stop dev:
   stage: deploy dev
   variables:
     GIT_STRATEGY: none
+    RELEASE: $DEV_RELEASE
   script:
     - helm uninstall $RELEASE --namespace $RELEASE
   when: manual
