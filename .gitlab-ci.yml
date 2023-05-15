@@ -11,7 +11,8 @@ variables:
   GIT_CLEAN_FLAGS: -ffdx -e .kaniko-cache
   TAG: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
   IMAGE: $CI_REGISTRY_IMAGE:$TAG
-  RELEASE: $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG
+  DEV_RELEASE: $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG
+  PROD_RELEASE: $CI_PROJECT_PATH_SLUG
   DEV_HOST: $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$BASE_DOMAIN
   PROD_HOST: producation.$BASE_DOMAIN
 
@@ -46,6 +47,7 @@ deploy dev:
   stage: deploy dev
   variables:
     HOST: $DEV_HOST
+    RELEASE: $DEV_RELEASE
   environment:
     name: $CI_COMMIT_REF_SLUG
     url: https://$HOST
@@ -78,6 +80,7 @@ deploy prod:
   stage: deploy prod
   variables:
     HOST: $PROD_HOST
+    RELEASE: $PROD_RELEASE
   environment:
     name: production
     url: https://$HOST
